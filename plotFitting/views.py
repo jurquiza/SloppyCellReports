@@ -14,10 +14,15 @@ from SloppyCell.ReactionNetworks import *
 #plt.plot([1.6, 2.7])
 #plt.savefig('/images/t.png',format='png')
 
-model_name='P2011' 
+
 #net_base = IO.from_SBML_file(model_name+'.xml', 'base', duplicate_rxn_params=True)
 #net_base.compile()
-
+P2011_flag=0
+def P2011_load(request):
+    net_base = IO.from_SBML_file(model_name+'.xml', 'base', duplicate_rxn_params=True)
+    net_base.compile()
+    P2011_flag=1
+    return render(request, 'plotFitting/plotFitting.html')
 
 def plotFitting(request):
     
@@ -25,9 +30,7 @@ def plotFitting(request):
     ## chosen by the user 
     ##Here we decide the type of model to use
     
-    if model_name=='P2011':
-        net_base = IO.from_SBML_file(model_name+'.xml', 'base', duplicate_rxn_params=True)
-        net_base.compile()
+    if P2011_flag:
         p  = Dynamics.integrate(net_base,(0,24*10))
         x=p.timepoints
         y=p.get_var_traj('cL_m')
@@ -39,6 +42,5 @@ def plotFitting(request):
     else:
         p = 1
         return render(request, 'plotFitting/plotFitting.html', {'p':p})
-
 
 
