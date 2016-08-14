@@ -21,5 +21,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'',include('frontpage.urls')),
-    url(r'^plotFitting/',include('plotFitting.urls')),
+    url(r'',include('plotFitting.urls')),
 ]

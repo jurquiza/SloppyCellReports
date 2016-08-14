@@ -17,12 +17,16 @@ from SloppyCell.ReactionNetworks import *
 
 #net_base = IO.from_SBML_file(model_name+'.xml', 'base', duplicate_rxn_params=True)
 #net_base.compile()
-P2011_flag=0
+
+def sloppyCellReports(request):
+    return render(request, 'plotFitting/sloppyCellReports.html')
+
+
 def P2011_load(request):
-    net_base = IO.from_SBML_file(model_name+'.xml', 'base', duplicate_rxn_params=True)
+    net_base = IO.from_SBML_file('P2011'+'.xml', 'base', duplicate_rxn_params=True)
     net_base.compile()
-    P2011_flag=1
-    return render(request, 'plotFitting/plotFitting.html')
+    return render(request, 'plotFitting/sloppyCellReports.html')
+
 
 def plotFitting(request):
     
@@ -30,17 +34,13 @@ def plotFitting(request):
     ## chosen by the user 
     ##Here we decide the type of model to use
     
-    if P2011_flag:
-        p  = Dynamics.integrate(net_base,(0,24*10))
-        x=p.timepoints
-        y=p.get_var_traj('cL_m')
-        plt.figure()
-        plt.plot(x,y)
+    p  = Dynamics.integrate(net_base,(0,24*10))
+    x=p.timepoints
+    y=p.get_var_traj('cL_m')
+    plt.figure()
+    plt.plot(x,y)
         ## the ploting file should required the name of the app 
-        plt.savefig('plotFitting/static/images/temp/x.png', format='png', dpi=300)
-        return render(request, 'plotFitting/plot.html')
-    else:
-        p = 1
-        return render(request, 'plotFitting/plotFitting.html', {'p':p})
+    plt.savefig('plotFitting/static/images/temp/x.png', format='png', dpi=300)
+    return render(request, 'plotFitting/plot.html')
 
 
