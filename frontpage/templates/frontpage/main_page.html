@@ -1,9 +1,9 @@
-{% extends "frontpage/base.html" %}
+{% extends "base.html" %}
     {% block content %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-5 col-sx-2">
-                <h4>A hub for Systems and Synthetic Chronobiology </h4>
+            <div class="col-lg-5">
+                <h3>A hub for Systems and Synthetic Chronobiology </h3>
                 <p>Our current understanding of biological clocks points to aun 
                     uderlying complex architecure composed of interlocked feedback loops. 
                     Mathematicl modelling has been fundamental for increasing our understanding 
@@ -14,8 +14,30 @@
                     models that not only will reflect our understaing of how timing emerges 
                     in biology but how to harness this understanding for synthetic chrobobiolgy 
                     applications
-                </p>  
+                </p>
+                
+                <h4>
+                    People
+                </h4>
+                <ul>
+                    <li> Uriel Urquiza-Garcia </li>
+                    <li> Andrew J. Millar </li>
+                </ul>
+                
+                <p align="right">This site is powered by:
+                </p> 
             </div>
         </div>
-    </div>    
+    </div>
+    
+    <div class="container-fluid ">
+        <div id ="footer" class="row">
+            <div class="col-lg-6 col-sx-6 fixed-bottom">
+            <img align="right" src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" class="img-responsive" width=100>
+            <img align="right" src=https://www.djangoproject.com/s/img/logos/django-logo-positive.png class="img-responsive" width=100>
+            
+            </div>
+        </div>
+        
+    </div>
     {% endblock %}
