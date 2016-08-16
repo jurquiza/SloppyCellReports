@@ -9,6 +9,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 from SloppyCell.ReactionNetworks import *
+from photoperiodMaker import *
 
 
 ## This dictionaty will contain the models to be used 
@@ -25,6 +26,7 @@ def sloppyCellReports(request):
 def P2011_load(request):  ## this has to be a general name
     if not model_list['P2011']: 
         model_list['P2011'] = IO.from_SBML_file('P2011'+'.xml', 'base', duplicate_rxn_params=True)
+        model_list['P2011'] = LD_into_LL(model_list['P2011'],20,'light')
         model_list['P2011'].compile()
         return render(request, 'plotFitting/sloppyCellReports.html')
     else:
@@ -35,13 +37,16 @@ def plotFitting(request):
     #model_name='P2011'  ## This variable will deleted in the next commit selecting model will be 
     ## chosen by the user 
     ##Here we decide the type of model to use
-    p  = Dynamics.integrate(model_list['P2011'],(0,24*10))
-    x=p.timepoints
-    y=p.get_var_traj('cL_m')
-    plt.figure()
-    plt.plot(x,y)
+    if model_list['P2011']:
+        p  = Dynamics.integrate(model_list['P2011'],(0,24*25))
+        x=p.timepoints
+        y=p.get_var_traj('cL_m')
+        plt.figure()
+        plt.plot(x,y)
         ## the ploting file should required the name of the app 
-    plt.savefig('plotFitting/static/images/temp/x.png', format='png', dpi=300)
-    return render(request, 'plotFitting/plot.html')
+        plt.savefig('plotFitting/static/images/temp/x.png', format='png', dpi=300)
+        return render(request, 'plotFitting/plot.html')
+    else:
+        return render(request, 'plotFitting/sloppyCellReports.html')
 
 
