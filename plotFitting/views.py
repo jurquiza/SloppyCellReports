@@ -10,31 +10,32 @@ import matplotlib.pyplot as plt
 
 from SloppyCell.ReactionNetworks import *
 
-#plt.ioff()
-#plt.plot([1.6, 2.7])
-#plt.savefig('/images/t.png',format='png')
 
+## This dictionaty will contain the models to be used 
+model_list={}
+list_of_models = ['P2011','F2014','U2017']
+for i in list_of_models:
+    model_list[i] = 0
 
-#net_base = IO.from_SBML_file(model_name+'.xml', 'base', duplicate_rxn_params=True)
-#net_base.compile()
 
 def sloppyCellReports(request):
     return render(request, 'plotFitting/sloppyCellReports.html')
 
 
-def P2011_load(request):
-    net_base = IO.from_SBML_file('P2011'+'.xml', 'base', duplicate_rxn_params=True)
-    net_base.compile()
-    return render(request, 'plotFitting/sloppyCellReports.html')
-
+def P2011_load(request):  ## this has to be a general name
+    if not model_list['P2011']: 
+        model_list['P2011'] = IO.from_SBML_file('P2011'+'.xml', 'base', duplicate_rxn_params=True)
+        model_list['P2011'].compile()
+        return render(request, 'plotFitting/sloppyCellReports.html')
+    else:
+        return render(request, 'plotFitting/sloppyCellReports.html')
 
 def plotFitting(request):
     
     #model_name='P2011'  ## This variable will deleted in the next commit selecting model will be 
     ## chosen by the user 
     ##Here we decide the type of model to use
-    
-    p  = Dynamics.integrate(net_base,(0,24*10))
+    p  = Dynamics.integrate(model_list['P2011'],(0,24*10))
     x=p.timepoints
     y=p.get_var_traj('cL_m')
     plt.figure()
