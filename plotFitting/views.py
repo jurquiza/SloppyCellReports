@@ -10,7 +10,9 @@ import matplotlib.pyplot as plt
 
 from SloppyCell.ReactionNetworks import *
 from photoperiodMaker import *
-
+from data_plotter import *
+from Full_TiMet_single_point_data_displaced import *
+import numpy as np
 
 ## This dictionaty will contain the models to be used 
 base_model_list={}
@@ -26,7 +28,7 @@ def sloppyCellReports(request):
 def P2011_load(request):  ## this has to be a general name
     if not base_model_list['P2011']: 
         base_model_list['P2011'] = IO.from_SBML_file('P2011'+'.xml', 'base', duplicate_rxn_params=True)
-        base_model_list['P2011'] = LD_into_LL(base_model_list['P2011'],20,'light') #This function takes a model and dya number
+        base_model_list['P2011'] = LD_into_LL(base_model_list['P2011'],10,'light') #This function takes a model and dya number
         base_model_list['P2011'].compile()
         return render(request, 'plotFitting/sloppyCellReports.html')
     else:
@@ -38,17 +40,20 @@ def plotFitting(request):
     ## chosen by the user 
     ##Here we decide the type of model to use
     if base_model_list['P2011']:
-        p  = Dynamics.integrate(base_model_list['P2011'],(0,24*25))
+        p  = Dynamics.integrate(base_model_list['P2011'],(0,24*15))
         x=p.timepoints
         y=p.get_var_traj('cL_m')
         light = p.get_var_traj('light')
-        plt.figure()
-        plt.subplot(211)
-        plt.plot(x,y, 'black')
-        plt.subplot(212)
-        plt.plot(x,light,'yellow')
-        ## the ploting file should required the name of the app 
-        plt.savefig('plotFitting/static/images/temp/x.png', format='png', dpi=300)
+        fig = plt.figure()
+        ax = fig.add_subplot(211)
+        plot_sp_data(ax,data,'col_0_LL','log_cL_m','red')
+        ax.plot(x,np.log(y))
+        ax2=fig.add_subplot(212)
+        ax2.plot(x,light)
+        ## the ploting file should required the name of the app
+        #data_ploted = plot_sp_data(data,'col_0_LL','log_cL_m','red')
+        #plt.data_ploted 
+        fig.savefig('plotFitting/static/images/temp/x.png', format='png', dpi=300)
         return render(request, 'plotFitting/plot.html')
     else:
         return render(request, 'plotFitting/sloppyCellReports.html')
