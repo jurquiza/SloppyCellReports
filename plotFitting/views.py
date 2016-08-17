@@ -1,7 +1,10 @@
 ## views for plotFitting
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 import os
+
+from .models import ModelProfile
+
 
 ##it is imporant that matplotlib is called before sloppyCell
 import matplotlib
@@ -13,6 +16,8 @@ from photoperiodMaker import *
 from data_plotter import *
 from Full_TiMet_single_point_data_displaced import *
 import numpy as np
+
+
 
 ## This dictionaty will contain the models to be used 
 base_model_list={}
@@ -26,10 +31,11 @@ def sloppyCellReports(request):
 
 
 def P2011_load(request):  ## this has to be a general name
-    if not base_model_list['P2011']: 
-        base_model_list['P2011'] = IO.from_SBML_file('P2011'+'.xml', 'base', duplicate_rxn_params=True)
-        base_model_list['P2011'] = LD_into_LL(base_model_list['P2011'],10,'light') #This function takes a model and dya number
-        base_model_list['P2011'].compile()
+    model_test = get_object_or_404(ModelProfile, pk=1)
+    if not base_model_list[model_test.get_model_base_display()]: 
+        base_model_list[model_test.get_model_base_display()] = IO.from_SBML_file('P2011'+'.xml', 'base', duplicate_rxn_params=True)
+        base_model_list[model_test.get_model_base_display()] = LD_into_LL(base_model_list['P2011'],model_test.number_of_LD_cycles,'light') #This function takes a model and dya number
+        base_model_list[model_test.get_model_base_display()].compile()
         return render(request, 'plotFitting/sloppyCellReports.html')
     else:
         return render(request, 'plotFitting/sloppyCellReports.html')
