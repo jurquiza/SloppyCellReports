@@ -32,10 +32,32 @@ def sloppyCellReports(request):
 
 def P2011_load(request):  ## this has to be a general name
     model_test = get_object_or_404(ModelProfile, pk=1)
-    if not base_model_list[model_test.get_model_base_display()]: 
-        base_model_list[model_test.get_model_base_display()] = IO.from_SBML_file('P2011'+'.xml', 'base', duplicate_rxn_params=True)
-        base_model_list[model_test.get_model_base_display()] = LD_into_LL(base_model_list['P2011'],model_test.number_of_LD_cycles,'light') #This function takes a model and dya number
-        base_model_list[model_test.get_model_base_display()].compile()
+    if not base_model_list['P2011']: 
+        base_model_list['P2011'] = IO.from_SBML_file('P2011'+'.xml', 'col_0_LL', duplicate_rxn_params=True)
+        base_model_list['P2011'] = LD_into_LL(base_model_list['P2011'],model_test.number_of_LD_cycles,'light') #This function takes a model and dya number
+        colnames = ['cL_m','cP9_m','cP7_m','cP5_m','cT_m','cLUX_m','cG_m','cE3_m','cE4_m']
+        for i in range(len(colnames)):
+            base_model_list['P2011'].add_species('log_'+colnames[i],'compartment_')
+            base_model_list['P2011'].add_assignment_rule('log_'+colnames[i],'log('+colnames[i]+')')
+        
+        
+        base_model_list['P2011'].compile()
+        return render(request, 'plotFitting/sloppyCellReports.html')
+    else:
+        return render(request, 'plotFitting/sloppyCellReports.html')
+
+
+
+## This is just a test function to see if we can run the model and do a fiting using our cool webapp
+
+def run_fitting(request):
+    if base_model_list['P2011']:
+        temp = base_model_list['P2011']
+        m = Model([expt],[temp])
+        params = m.get_params()
+        print 'Fitting started'
+        params = Optimization.fmin_lm_log_params_fd(m,params,maxiter=2,disp=True, avegtol=1e3)
+        Utility.save('test_django_sloppycell_params', params) 
         return render(request, 'plotFitting/sloppyCellReports.html')
     else:
         return render(request, 'plotFitting/sloppyCellReports.html')
