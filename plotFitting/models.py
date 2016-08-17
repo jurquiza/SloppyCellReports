@@ -50,8 +50,21 @@ class Choice(models.Model):
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
     
+class PeriodConstraint(models.Model):
+    LIGHT_REGIME_CHOICES = (
+    ('LD','Light:Dark'),
+    ('LL','Constant Light'),
+    ('DD','Constant Dark'),
+    )
+    light_regime = models.CharField(default = 'LD', max_length=3, choices=LIGHT_REGIME_CHOICES)
+    gene = models.CharField(max_length=200)
+    start_time = models.FloatField(default=0)
+    end_time = models.FloatField(default=0)
+    def __unicode__(self):
+        return self.light_regime
+    
 class ModelProfile(models.Model):
-    modelprofile_text = models.CharField(default='', max_length=200)
+    model_profile = models.CharField(default='edit name', max_length=200)
     CLOCK_MODELS = (
     ('P11','P2011'),
     ('F14','F2014'),
@@ -67,6 +80,13 @@ class ModelProfile(models.Model):
     model_base = models.CharField(default = 'P2011', max_length=3, choices=CLOCK_MODELS)
     photo_period_pattern = models.CharField(default = 'LD', max_length=5, choices=PHOTO_PATTERN)
     number_of_LD_cycles = models.IntegerField(default=1, blank=True)
+    period_constraint = models.ForeignKey(PeriodConstraint, blank=True, null=True,on_delete=models.CASCADE)
+    description = models.TextField(blank=True)
+    
+    
+    ## this returns the value of the object 
+    def __unicode__(self):
+        return self.model_profile
     
     
     

@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 import os
 
-from .models import ModelProfile
+from .models import ModelProfile, PeriodConstraint
 
 
 ##it is imporant that matplotlib is called before sloppyCell
@@ -41,7 +41,8 @@ def P2011_load(request):  ## this has to be a general name
         return render(request, 'plotFitting/sloppyCellReports.html')
 
 def plotFitting(request):
-    
+    model_test = get_object_or_404(ModelProfile, pk=1)
+    period_constraint = get_object_or_404(PeriodConstraint, pk=model_test.period_constraint_id)
     #model_name='P2011'  ## This variable will deleted in the next commit selecting model will be 
     ## chosen by the user 
     ##Here we decide the type of model to use
@@ -54,6 +55,9 @@ def plotFitting(request):
         ax = fig.add_subplot(211)
         plot_sp_data(ax,data,'col_0_LL','log_cL_m','red')
         ax.plot(x,np.log(y))
+        start_time = model_test
+        ax.axvline(period_constraint.start_time, color='green')
+        ax.axvline(period_constraint.end_time, color='green')
         ax2=fig.add_subplot(212)
         ax2.plot(x,light)
         ## the ploting file should required the name of the app
