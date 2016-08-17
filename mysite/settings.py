@@ -60,7 +60,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'static/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,7 +74,7 @@ TEMPLATES = [
 ]
 
 ##This allows me to use a general  base template 
-TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
+#TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'static/'))
 
 
 WSGI_APPLICATION = 'mysite.wsgi.application'

@@ -7,4 +7,5 @@ db.sqlite3
 /static
 .DS_store
 /plotFitting/static/images/temp/
+/plotFitting/migrations/
 prototyping/
