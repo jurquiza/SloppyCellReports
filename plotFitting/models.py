@@ -82,11 +82,12 @@ class ModelProfile(models.Model):
     number_of_LD_cycles = models.IntegerField(default=1, blank=True)
     period_constraint = models.ForeignKey(PeriodConstraint, blank=True, null=True,on_delete=models.CASCADE)
     description = models.TextField(blank=True)
-    
+    fitted_params_path = models.CharField(default = 'fill path', max_length=200)
     
     ## this returns the value of the object 
     def __unicode__(self):
         return self.model_profile
+    
     
     
     

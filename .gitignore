@@ -1,9 +1,11 @@
+.SloppyCell
 *.c
 *.pyf
 *.pyc
 __pycache__
 myenv
 db.sqlite3
+logs/
 /static
 .DS_store
 /plotFitting/static/images/temp/

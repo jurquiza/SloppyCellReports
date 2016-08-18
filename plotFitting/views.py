@@ -2,9 +2,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 import os
+import time
 
 from .models import ModelProfile, PeriodConstraint
+from plotFitting.tasks import test
 
+
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ##it is imporant that matplotlib is called before sloppyCell
 import matplotlib
@@ -51,13 +55,20 @@ def P2011_load(request):  ## this has to be a general name
 ## This is just a test function to see if we can run the model and do a fiting using our cool webapp
 
 def run_fitting(request):
+    model_test = get_object_or_404(ModelProfile, pk=1)
+    
     if base_model_list['P2011']:
         temp = base_model_list['P2011']
         m = Model([expt],[temp])
         params = m.get_params()
         print 'Fitting started'
-        params = Optimization.fmin_lm_log_params_fd(m,params,maxiter=2,disp=True, avegtol=1e3)
-        Utility.save('test_django_sloppycell_params', params) 
+        #params = Optimization.fmin_lm_log_params_fd(m,params,maxiter=2,disp=True, avegtol=1e3)
+        t_stamp = time.strftime("%H:%M:%S")
+        #model_test.save(commit=False)
+        model_test.fitted_params_path =os.path.join(BASE, '/P2011'+'_params_'+t_stamp)
+        model_test.save()
+        #Utility.save(params,os.getcwd()+'P2011'+'_params_'+t_stamp) 
+        test.delay('P2011')  ## I will have to pass the profile to the function. Then the task will call the profile and do the fitting after laoding the model
         return render(request, 'plotFitting/sloppyCellReports.html')
     else:
         return render(request, 'plotFitting/sloppyCellReports.html')
